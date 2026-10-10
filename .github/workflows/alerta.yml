@@ -1,0 +1,31 @@
+name: Alerta a ntfy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  hola-mundo-y-notificacion:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Ejecutar Hola Mundo
+        run: node hola-mundo.js
+
+      - name: Notificar en ntfy
+        if: always()
+        run: |
+          curl --fail --silent --show-error \
+            --request POST \
+            --header "Title: Actualizacion en main" \
+            --data "Se subio codigo al repositorio $GITHUB_REPOSITORY en la rama main. Commit: $GITHUB_SHA" \
+            https://ntfy.sh/devops-itla
+
